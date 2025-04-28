@@ -1,0 +1,890 @@
+/**
+ * Code for MsEE Project Map using sigma.js
+ * made by Pablo Cardenas based on sigma.js example code
+ */
+
+const LAB_COLOR = "#E9C46A";
+const BRANCH_COLOR = "rgba(0,0,0,0)";
+const TOPIC_COLOR = "#E76F51"; // unused
+const TOOL_COLOR = "#F4A261";
+const QUESTION_COLOR = "#2A9D8F";
+const OBJECTIVE_COLOR = "#264653"; // unused
+
+const EDGE_SIZE = 2;
+const INIT_SEARCH_TERM = "Search term...";
+const DEFAULT_TXT =
+  "<p>Illustrated nodes are <b>areas of research</b>.</p>" +
+  "<p>Colored nodes are <b>projects</b>, understood as drivers or motivators of research. " +
+  'These come in two types: those aimed at <b><font color="' +
+  QUESTION_COLOR +
+  '">answering questions</font></b> to understand phenomena ' +
+  'and those aimed at <b><font color="' +
+  TOOL_COLOR +
+  '">building tools</font></b> capable of achieving objectives.</p>' +
+  "<p>Connections between projects denote <b>direct synergies</b>. Connections to research areas denote <b>belonging</b>.</p>" +
+  '<p>Read more about us at <b><a href="https://mseelab.org/" target="_blank">mseelab.org</a></b>. Interested? <b><a href="./index.html#contact">Reach out!</a></b></p>' +
+  "Go on and explore. ";
+
+const TEAM_DICT = {
+  "Pablo Cárdenas R.":
+    '<a href="https://mseelab.org/members.html#pablocr"><img alt="Pablo" title="Pablo" class="team_pics" src="./assets/img/members/pablo-biorxiv-face.jpg"/></a>',
+};
+
+const OMITTED_WORDS = [
+  "",
+  "a",
+  "an",
+  "the",
+  "and",
+  "or",
+  "but",
+  "nor",
+  "for",
+  "yet",
+  "so",
+  "although",
+  "because",
+  "since",
+  "unless",
+  "while",
+  "whereas",
+  "if",
+  "though",
+  "even though",
+  "whether",
+  "about",
+  "above",
+  "across",
+  "after",
+  "against",
+  "along",
+  "among",
+  "around",
+  "at",
+  "before",
+  "behind",
+  "below",
+  "beneath",
+  "beside",
+  "between",
+  "beyond",
+  "by",
+  "despite",
+  "down",
+  "during",
+  "except",
+  "for",
+  "from",
+  "in",
+  "inside",
+  "into",
+  "like",
+  "near",
+  "of",
+  "off",
+  "on",
+  "onto",
+  "out",
+  "outside",
+  "over",
+  "past",
+  "since",
+  "through",
+  "throughout",
+  "to",
+  "toward",
+  "under",
+  "underneath",
+  "until",
+  "up",
+  "upon",
+  "with",
+  "within",
+  "without",
+  "is",
+  "are",
+  "was",
+  "were",
+  "be",
+  "been",
+  "being",
+  "am",
+  "do",
+  "does",
+  "did",
+  "have",
+  "has",
+  "had",
+  "having",
+  "can",
+  "could",
+  "shall",
+  "should",
+  "will",
+  "would",
+  "may",
+  "might",
+  "must",
+  "not",
+  "no",
+  "yes",
+  "very",
+  "too",
+  "just",
+  "only",
+  "such",
+  "that",
+  "this",
+  "these",
+  "those",
+  "each",
+  "every",
+  "all",
+  "some",
+  "any",
+  "either",
+  "neither",
+  "both",
+  "many",
+  "much",
+  "more",
+  "most",
+  "few",
+  "less",
+  "least",
+  "several",
+  "we",
+  "it",
+  "us",
+  "how",
+  "href",
+  "https",
+  "http",
+  "www",
+  "com",
+  "org",
+  "et",
+  "al",
+];
+
+const tools_btn = document.getElementById("tools_btn");
+const questions_btn = document.getElementById("questions_btn");
+const planned_btn = document.getElementById("planned_btn");
+const active_btn = document.getElementById("active_btn");
+const archived_btn = document.getElementById("archived_btn");
+const wet_btn = document.getElementById("wet_btn");
+const dry_btn = document.getElementById("dry_btn");
+const combined_btn = document.getElementById("combined_btn");
+const labels_btn = document.getElementById("labels_btn");
+
+var tools_show = true;
+var questions_show = true;
+var planned_show = true;
+var active_show = true;
+var archived_show = true;
+var wet_show = true;
+var dry_show = true;
+var combined_show = true;
+var labels_show = false;
+
+const search_ui = document.getElementById("search_box");
+const search_terms_ui = document.getElementById("search_terms");
+
+const node_info_ui = document.getElementById("node_info");
+
+const graph = new graphology.Graph();
+const empty_graph = new graphology.Graph();
+// used to temporarily fill the renderer
+var renderer = new Sigma(
+  // declared here to make it accessible to other functions
+  empty_graph,
+  document.getElementById("sigma-container"),
+  {
+    // defaultNodeType: "image",
+    nodeProgramClasses: {
+      image: Sigma.rendering.createNodeImageProgram(),
+    },
+
+    settings: {
+      edgeSize: 10,
+    },
+  },
+);
+
+Papa.parse("./dat/projects.csv", {
+  download: true,
+  header: true,
+  delimiter: ",",
+  // on row load, make a new node
+  step: function (row) {
+    if (row.data.ID == "MsEE") {
+      graph.addNode(row.data.ID, {
+        x: 0,
+        y: 0,
+        type: "image",
+        image: "./assets/img/msee_logo-gray.png",
+        // we start with gray images and then replace with colored so they're all loaded
+        originalImage: "./assets/img/msee_logo.png",
+        grayImage: "./assets/img/msee_logo-gray.png",
+        color: "rgba(0,0,0,1)",
+        originalColor: "rgba(0,0,0,1)",
+        size: 60,
+        labelWeight: "bold",
+        labelSize: 20,
+        name: row.data.Name,
+        id: row.data.ID,
+        label: "",
+        nodeType: row.data.Type, // "type" conflicts with an existing node property
+        methodology: row.data.Methodology,
+        status: row.data.Status,
+        years: row.data.Years,
+        team: row.data.Team,
+        collaborators: row.data.Collaborators,
+        funding: row.data.Funding,
+        products: row.data.Products,
+        notebook: row.data.Notebook,
+        connections: row.data.Connections,
+        content: row.data.Content,
+        displayed: true,
+      });
+    } else if (row.data.ID == "SynBio") {
+      graph.addNode(row.data.ID, {
+        x: 0,
+        y: -100,
+        type: "image",
+        image: "./assets/img/synbio-melanconnie-gray.png",
+        originalImage: "./assets/img/synbio-melanconnie.png",
+        grayImage: "./assets/img/synbio-melanconnie-gray.png",
+        color: "rgba(0,0,0,1)",
+        originalColor: "rgba(0,0,0,1)",
+        size: 40,
+        labelWeight: "bold",
+        labelSize: 20,
+        name: row.data.Name,
+        id: row.data.ID,
+        label: "",
+        nodeType: row.data.Type, // "type" conflicts with an existing node property
+        methodology: row.data.Methodology,
+        status: row.data.Status,
+        years: row.data.Years,
+        team: row.data.Team,
+        collaborators: row.data.Collaborators,
+        funding: row.data.Funding,
+        products: row.data.Products,
+        notebook: row.data.Notebook,
+        connections: row.data.Connections,
+        content: row.data.Content,
+        displayed: true,
+      });
+    } else if (row.data.ID == "CompMod") {
+      graph.addNode(row.data.ID, {
+        x: -1000,
+        y: 0,
+        type: "image",
+        image: "./assets/img/population-melanconnie-gray.png",
+        originalImage: "./assets/img/population-melanconnie.png",
+        grayImage: "./assets/img/population-melanconnie-gray.png",
+        color: "rgba(0,0,0,1)",
+        originalColor: "rgba(0,0,0,1)",
+        size: 40,
+        labelWeight: "bold",
+        name: row.data.Name,
+        id: row.data.ID,
+        label: "",
+        nodeType: row.data.Type, // "type" conflicts with an existing node property
+        methodology: row.data.Methodology,
+        status: row.data.Status,
+        years: row.data.Years,
+        team: row.data.Team,
+        collaborators: row.data.Collaborators,
+        funding: row.data.Funding,
+        products: row.data.Products,
+        notebook: row.data.Notebook,
+        connections: row.data.Connections,
+        content: row.data.Content,
+        displayed: true,
+      });
+    } else if (row.data.ID == "Applications") {
+      graph.addNode(row.data.ID, {
+        x: -100,
+        y: 0,
+        type: "image",
+        image: "./assets/img/earth-melanconnie-gray.png",
+        originalImage: "./assets/img/earth-melanconnie.png",
+        grayImage: "./assets/img/earth-melanconnie-gray.png",
+        color: "rgba(0,0,0,1)",
+        originalColor: "rgba(0,0,0,1)",
+        size: 40,
+        labelWeight: "bold",
+        name: row.data.Name,
+        id: row.data.ID,
+        label: "",
+        nodeType: row.data.Type, // "type" conflicts with an existing node property
+        methodology: row.data.Methodology,
+        status: row.data.Status,
+        years: row.data.Years,
+        team: row.data.Team,
+        collaborators: row.data.Collaborators,
+        funding: row.data.Funding,
+        products: row.data.Products,
+        notebook: row.data.Notebook,
+        connections: row.data.Connections,
+        content: row.data.Content,
+        displayed: true,
+      });
+    } else if (row.data.ID != null) {
+      graph.addNode(row.data.ID, {
+        x: 0,
+        y: 0,
+        color: "rgba(0,0,0,1)",
+        originalColor: "rgba(0,0,0,1)",
+        size: 10,
+        name: row.data.Name,
+        id: row.data.ID,
+        label: "",
+        nodeType: row.data.Type, // "type" conflicts with something internal?
+        methodology: row.data.Methodology,
+        status: row.data.Status,
+        years: row.data.Years,
+        team: row.data.Team,
+        collaborators: row.data.Collaborators,
+        funding: row.data.Funding,
+        products: row.data.Products,
+        notebook: row.data.Notebook,
+        connections: row.data.Connections,
+        content: row.data.Content,
+        displayed: true,
+      });
+    }
+  },
+  // when done loading, continue
+  complete: function (data) {
+    // add edges
+    graph.forEachNode((node) => {
+      graph
+        .getNodeAttribute(node, "connections")
+        .split(", ")
+        .forEach((connection) => {
+          if (connection != "") {
+            graph.addEdge(node, connection, { size: EDGE_SIZE });
+          }
+        });
+    });
+
+    // compute forceatlas2 positions
+    graphologyLibrary.layout.circular.assign(graph);
+    const settings = graphologyLibrary.layoutForceAtlas2.inferSettings(graph);
+    graphologyLibrary.layoutForceAtlas2.assign(graph, {
+      settings,
+      iterations: 600,
+    });
+    renderer = new Sigma(graph, document.getElementById("sigma-container"), {
+      // defaultNodeType: "image",
+      nodeProgramClasses: {
+        image: Sigma.rendering.createNodeImageProgram(),
+      },
+
+      settings: {
+        edgeSize: 10,
+      },
+    });
+
+    renderer.on("enterNode", (e) => {
+      graph.setNodeAttribute(
+        e.node,
+        "label",
+        graph.getNodeAttribute(e.node, "name"),
+      );
+    });
+
+    renderer.on("leaveNode", (e) => {
+      // if (
+      //   e.node != "MsEE" &&
+      //   e.node != "SynBio" &&
+      //   e.node != "CompMod" &&
+      //   e.node != "Applications"
+      // ) {
+      //   graph.setNodeAttribute(e.node, "label", "");
+      // }
+      graph.setNodeAttribute(e.node, "label", "");
+    });
+
+    // Drag'n'drop feature
+    // ~~~~~~~~~~~~~~~~~~~
+
+    // Create the spring layout and start it
+    // this was changed from ForceSupervisor() to graphologyLibrary.ForceLayout()
+    const layout = new graphologyLibrary.ForceLayout(graph, {
+      isNodeFixed: function (node, attr) {
+        if (attr.highlighted || attr.nodeType == "Lab") {
+          return true;
+        } else return false;
+      },
+    });
+    layout.start();
+
+    // State for drag'n'drop
+    let draggedNode = null;
+    let isDragging = false;
+
+    // On mouse down on a node
+    //  - we enable the drag mode
+    //  - save in the dragged node in the state
+    //  - highlight the node
+    //  - disable the camera so its state is not updated
+    renderer.on("downNode", (e) => {
+      isDragging = true;
+      draggedNode = e.node;
+      graph.setNodeAttribute(draggedNode, "highlighted", true);
+      if (!renderer.getCustomBBox()) renderer.setCustomBBox(renderer.getBBox());
+    });
+
+    // On mouse move, if the drag mode is enabled, we change the position of the draggedNode
+    renderer.on("moveBody", ({ event }) => {
+      if (!isDragging) return;
+
+      // Get new position of node
+      const pos = renderer.viewportToGraph(event);
+
+      graph.setNodeAttribute(draggedNode, "x", pos.x);
+      graph.setNodeAttribute(draggedNode, "y", pos.y);
+
+      // Prevent sigma to move camera:
+      event.preventSigmaDefault();
+      event.original.preventDefault();
+      event.original.stopPropagation();
+    });
+
+    // On mouse up, we reset the dragging mode
+    const handleUp = () => {
+      if (draggedNode) {
+        graph.removeNodeAttribute(draggedNode, "highlighted");
+      }
+      isDragging = false;
+      draggedNode = null;
+    };
+    renderer.on("upNode", handleUp);
+    renderer.on("upStage", handleUp);
+
+    // 4. Add colors to the nodes, based on node types:
+    graph.forEachNode((node, attributes) => {
+      if (attributes.nodeType == "Lab") {
+        graph.setNodeAttribute(node, "color", LAB_COLOR);
+        graph.setNodeAttribute(node, "originalColor", LAB_COLOR);
+      } else if (attributes.nodeType == "Branch") {
+        graph.setNodeAttribute(node, "color", BRANCH_COLOR);
+        graph.setNodeAttribute(node, "originalColor", BRANCH_COLOR);
+      } else if (attributes.nodeType == "Topic") {
+        graph.setNodeAttribute(node, "color", TOPIC_COLOR);
+        graph.setNodeAttribute(node, "originalColor", TOPIC_COLOR);
+      } else if (attributes.nodeType == "Tool") {
+        graph.setNodeAttribute(node, "color", TOOL_COLOR);
+        graph.setNodeAttribute(node, "originalColor", TOOL_COLOR);
+      } else if (attributes.nodeType == "Question") {
+        graph.setNodeAttribute(node, "color", QUESTION_COLOR);
+        graph.setNodeAttribute(node, "originalColor", QUESTION_COLOR);
+      } else if (attributes.nodeType == "Objective") {
+        graph.setNodeAttribute(node, "color", OBJECTIVE_COLOR);
+        graph.setNodeAttribute(node, "originalColor", OBJECTIVE_COLOR);
+      }
+    });
+
+    // 5. Use degrees for node sizes:
+    const degrees = graph.nodes().map((node) => graph.degree(node));
+    const minDegree = Math.min(...degrees);
+    const maxDegree = Math.max(...degrees);
+    const minSize = 5,
+      maxSize = 20;
+    graph.forEachNode((node) => {
+      if (
+        node != "MsEE" &&
+        node != "SynBio" &&
+        node != "CompMod" &&
+        node != "Applications"
+      ) {
+        const degree = graph.degree(node);
+        graph.setNodeAttribute(
+          node,
+          "size",
+          minSize +
+            ((degree - minDegree + 1) / (maxDegree - minDegree + 1)) *
+              (maxSize - minSize),
+        );
+      }
+    });
+
+    // This is to then modify colors and have something to return to:
+    renderer.graph.nodes().forEach(function (n) {
+      graph.setNodeAttribute(
+        n,
+        "originalColor",
+        graph.getNodeAttribute(n, "color"),
+      );
+      if (
+        n == "MsEE" ||
+        n == "SynBio" ||
+        n == "CompMod" ||
+        n == "Applications"
+      ) {
+        graph.setNodeAttribute(
+          n,
+          "image",
+          graph.getNodeAttribute(n, "originalImage"),
+        ); // set it to its original color
+      }
+    });
+    renderer.graph.edges().forEach(function (e) {
+      graph.setEdgeAttribute(
+        e,
+        "originalColor",
+        graph.getEdgeAttribute(e, "color"),
+      );
+      graph.setEdgeAttribute(e, "source", graph.getSourceAttribute(e, "id"));
+      graph.setEdgeAttribute(e, "target", graph.getTargetAttribute(e, "id"));
+    });
+
+    /**
+     * Selects a node by given ID
+     */
+    function selectNode(nodeId) {
+      var toKeep = []; // object contains nodes to render as neighbors
+      renderer.graph.neighbors(nodeId).forEach(function (n) {
+        if (graph.getNodeAttribute(n, "displayed")) {
+          toKeep.push(n);
+        }
+      });
+      toKeep.push(nodeId); // add selected node as one of the ones to be rendered
+
+      // We loop across all edges in graph:
+      renderer.graph.edges().forEach(function (e) {
+        if (
+          (graph.getSourceAttribute(e, "id") == nodeId &&
+            graph.getSourceAttribute(e, "displayed")) ||
+          (graph.getTargetAttribute(e, "id") == nodeId &&
+            graph.getSourceAttribute(e, "displayed"))
+        ) {
+          // if touching the selected node being redrawn
+          graph.setEdgeAttribute(e, "color", "#56B4E9"); // make blue!
+        } else if (
+          toKeep.includes(graph.getSourceAttribute(e, "id")) &&
+          toKeep.includes(graph.getTargetAttribute(e, "id"))
+        ) {
+          // if touching 2 of the nodes being redrawn
+          graph.setEdgeAttribute(
+            e,
+            "color",
+            graph.getEdgeAttribute(e, "originalColor"),
+          ); // make this edge have its original color
+        } else if (
+          toKeep.includes(graph.getSourceAttribute(e, "id")) ||
+          toKeep.includes(graph.getTargetAttribute(e, "id"))
+        ) {
+          // if touching one of the nodes being redrawn
+          graph.setEdgeAttribute(e, "color", "#eee"); // otherwise make it light gray
+        } else graph.setEdgeAttribute(e, "color", "#eee"); // otherwise make it light gray
+      });
+
+      // We loop across all nodes in graph:
+      renderer.graph.nodes().forEach(function (n) {
+        if (toKeep.includes(n)) {
+          // if this is the selected node or one of its neighbors,
+          showNode(n);
+        } // if not a neighbor or selected node,
+        else {
+          grayNode(n);
+        }
+      });
+
+      // This shows node info:
+      if (
+        nodeId == "MsEE" ||
+        nodeId == "SynBio" ||
+        nodeId == "CompMod" ||
+        nodeId == "Applications"
+      ) {
+        node_info_ui.innerHTML =
+          "<br><span class='headingTxt'>" +
+          graph.getNodeAttribute(nodeId, "name") +
+          "</span><p>" +
+          graph.getNodeAttribute(nodeId, "content") +
+          "</p>";
+      } else {
+        var notebook = "";
+        if (graph.getNodeAttribute(nodeId, "notebook").length > 0) {
+          notebook =
+            "</br><a href='" +
+            graph.getNodeAttribute(nodeId, "notebook") +
+            "' target='_blank'><b>Notebook</b></a></br>";
+        }
+
+        var team = "";
+        graph
+          .getNodeAttribute(nodeId, "team")
+          .split(",")
+          .forEach(function (member) {
+            console.log(member);
+            if (member in TEAM_DICT) {
+              team = team + TEAM_DICT[member];
+            } else {
+              team = team + member;
+            }
+          });
+
+        if (team.search("<img") > -1) {
+          team = '<div class="member_list">' + team + "</div>";
+        } else team = team + "</br>";
+
+        node_info_ui.innerHTML =
+          "<br><span class='headingTxt'>" +
+          graph.getNodeAttribute(nodeId, "name") +
+          "</span></br><i>" +
+          graph.getNodeAttribute(nodeId, "methodology") +
+          " " +
+          graph.getNodeAttribute(nodeId, "nodeType").toLowerCase() +
+          " project</i></br></br><b>Active:</b> " +
+          graph.getNodeAttribute(nodeId, "years") +
+          "</i></br><b>MsEE Lab Team: </b>" +
+          team +
+          "<b>Collaborators: </b>" +
+          graph.getNodeAttribute(nodeId, "collaborators") +
+          "</br><b>Products: </b>" +
+          graph.getNodeAttribute(nodeId, "products") +
+          "</br><b>Funding sources: </b>" +
+          graph.getNodeAttribute(nodeId, "funding") +
+          "</b>" +
+          notebook +
+          "<p>" +
+          graph.getNodeAttribute(nodeId, "content") +
+          "</p>";
+      }
+
+      // Since the data has been modified, we need to
+      // call the refresh method to make the colors
+      // update effective.
+      renderer.refresh();
+    }
+
+    renderer.on("clickNode", (e) => {
+      selectNode(e.node);
+    });
+
+    // When the stage is clicked, we just color each
+    // node and edge with its original color.
+    renderer.on("clickStage", (e) => {
+      colorUnselectedGraph();
+      if (search_ui.value == "") search_ui.value = INIT_SEARCH_TERM;
+    });
+
+    colorUnselectedGraph();
+    buildTermList();
+
+    // don't know what this does but i'll leave it just in case :)
+    return () => {
+      renderer.kill();
+    };
+  },
+});
+
+function toggleShow(btn, txt) {
+  if (btn == tools_btn) tools_show = !tools_show;
+  else if (btn == questions_btn) questions_show = !questions_show;
+  else if (btn == planned_btn) planned_show = !planned_show;
+  else if (btn == active_btn) active_show = !active_show;
+  else if (btn == archived_btn) archived_show = !archived_show;
+  else if (btn == wet_btn) wet_show = !wet_show;
+  else if (btn == dry_btn) dry_show = !dry_show;
+  else if (btn == combined_btn) combined_show = !combined_show;
+
+  if (btn.innerHTML.substring(0, 3) == "<u>") {
+    btn.innerHTML = "<font color='#AAA'>" + txt + "</font>";
+  } else btn.innerHTML = "<u>" + txt + "</u>";
+
+  colorUnselectedGraph();
+}
+
+function colorUnselectedGraph() {
+  renderer.graph.nodes().forEach(function (n) {
+    if (
+      (graph.getNodeAttribute(n, "nodeType") == "Lab" ||
+        graph.getNodeAttribute(n, "nodeType") == "Branch" ||
+        (((graph.getNodeAttribute(n, "nodeType") == "Tool" && tools_show) ||
+          (graph.getNodeAttribute(n, "nodeType") == "Question" &&
+            questions_show)) &&
+          ((graph.getNodeAttribute(n, "status") == "Planned" && planned_show) ||
+            (graph.getNodeAttribute(n, "status") == "Active" && active_show) ||
+            (graph.getNodeAttribute(n, "status") == "Archived" &&
+              archived_show)) &&
+          ((graph.getNodeAttribute(n, "methodology") == "Experimental" &&
+            wet_show) ||
+            (graph.getNodeAttribute(n, "methodology") == "Computational" &&
+              dry_show) ||
+            (graph.getNodeAttribute(n, "methodology") ==
+              "Experimental & computational" &&
+              combined_show)))) &&
+      searchFilter(n)
+    ) {
+      graph.setNodeAttribute(n, "displayed", true);
+      showNode(n);
+    } else {
+      graph.setNodeAttribute(n, "displayed", false);
+      grayNode(n);
+    }
+  });
+
+  colorEdges();
+
+  renderer.refresh();
+  node_info_ui.innerHTML = DEFAULT_TXT; // reset display list
+}
+
+function foundInAttribute(term, attribute, node) {
+  return (
+    graph
+      .getNodeAttribute(node, attribute)
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .search(term) > -1
+  );
+}
+
+function searchFilter(n) {
+  var searchTerm = search_ui.value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+  if (searchTerm.length > 0 && searchTerm != INIT_SEARCH_TERM.toLowerCase()) {
+    return (
+      foundInAttribute(searchTerm, "name", n) ||
+      foundInAttribute(searchTerm, "years", n) ||
+      foundInAttribute(searchTerm, "team", n) ||
+      foundInAttribute(searchTerm, "collaborators", n) ||
+      foundInAttribute(searchTerm, "funding", n) ||
+      foundInAttribute(searchTerm, "products", n) ||
+      foundInAttribute(searchTerm, "content", n)
+    );
+  } else return true;
+}
+
+function showNode(n) {
+  graph.setNodeAttribute(
+    n,
+    "color",
+    graph.getNodeAttribute(n, "originalColor"),
+  );
+  if (n == "MsEE" || n == "SynBio" || n == "CompMod" || n == "Applications") {
+    graph.setNodeAttribute(
+      n,
+      "image",
+      graph.getNodeAttribute(n, "originalImage"),
+    ); // set it to its original color
+  }
+  if (labels_show)
+    graph.setNodeAttribute(n, "label", graph.getNodeAttribute(n, "name"));
+}
+
+function grayNode(n) {
+  graph.setNodeAttribute(n, "color", "#eee"); // grey it out
+  if (n == "MsEE" || n == "SynBio" || n == "CompMod" || n == "Applications") {
+    graph.setNodeAttribute(n, "image", graph.getNodeAttribute(n, "grayImage")); // set it to its original color
+  }
+  graph.setNodeAttribute(n, "label", "");
+}
+
+function colorEdges() {
+  renderer.graph.edges().forEach(function (e) {
+    // for every edge,
+    if (
+      graph.getSourceAttribute(e, "displayed") &&
+      graph.getTargetAttribute(e, "displayed")
+    ) {
+      graph.setEdgeAttribute(
+        e,
+        "color",
+        graph.getEdgeAttribute(e, "originalColor"),
+      ); // reset color
+    } else graph.setEdgeAttribute(e, "color", "#eee"); // otherwise make it light gray
+  });
+}
+
+function toggleLabels() {
+  labels_show = !labels_show;
+
+  if (labels_show) {
+    labels_btn.innerHTML = "<u>labels</u>";
+    renderer.graph.nodes().forEach(function (n) {
+      if (graph.getNodeAttribute(n, "displayed")) {
+        graph.setNodeAttribute(n, "label", graph.getNodeAttribute(n, "name"));
+      }
+    });
+  } else {
+    labels_btn.innerHTML = "<font color='#AAA'>labels</font>";
+    renderer.graph.nodes().forEach(function (n) {
+      graph.setNodeAttribute(n, "label", "");
+    });
+  }
+
+  renderer.refresh();
+}
+
+function buildTermList() {
+  var dat = "";
+  graph.nodes().forEach(function (n) {
+    dat =
+      dat +
+      [
+        graph.getNodeAttribute(n, "name"),
+        graph.getNodeAttribute(n, "years"),
+        graph.getNodeAttribute(n, "team"),
+        graph.getNodeAttribute(n, "collaborators"),
+        graph.getNodeAttribute(n, "funding"),
+        graph.getNodeAttribute(n, "products"),
+        graph.getNodeAttribute(n, "content"),
+        "",
+      ].join(" ");
+  });
+  var words = dat
+    .toLowerCase()
+    .replace(/[^\p{L}\s]/gu, " ")
+    .normalize("NFD") // replaces accents
+    .replace(/[\u0300-\u036f]/g, "") // replaces accents
+    .split(" ");
+  var terms = [];
+  words.forEach(function (word) {
+    word = word.trim();
+    if (
+      !OMITTED_WORDS.includes(word) &&
+      word.length > 2 &&
+      !terms.includes(word)
+    ) {
+      terms.push(word);
+      var option = document.createElement("option");
+      option.value = word;
+      search_terms_ui.appendChild(option);
+    }
+  });
+}
+
+// Next, add listeners for the buttons on the UI:
+tools_btn.addEventListener("click", () => toggleShow(tools_btn, "tools"));
+questions_btn.addEventListener("click", () =>
+  toggleShow(questions_btn, "questions"),
+);
+planned_btn.addEventListener("click", () => toggleShow(planned_btn, "planned"));
+active_btn.addEventListener("click", () => toggleShow(active_btn, "active"));
+archived_btn.addEventListener("click", () =>
+  toggleShow(archived_btn, "archived"),
+);
+wet_btn.addEventListener("click", () => toggleShow(wet_btn, "wet lab"));
+dry_btn.addEventListener("click", () => toggleShow(dry_btn, "dry lab"));
+combined_btn.addEventListener("click", () =>
+  toggleShow(combined_btn, "combined"),
+);
+
+labels_btn.addEventListener("click", () => toggleLabels());
+search_ui.addEventListener("click", () => {
+  if (search_ui.value == INIT_SEARCH_TERM) search_ui.value = "";
+});
+search_ui.addEventListener("input", () => {
+  colorUnselectedGraph();
+});

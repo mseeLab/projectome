@@ -1,0 +1,119 @@
+@charset "utf-8";
+/* CSS Document */
+
+@import "https://fonts.googleapis.com/css?family=Quantico|Cabin|Poppins";
+
+@font-face {
+    font-family: "Quantico local", cursive;
+    src: url("../assets/fonts/Quantico/Quantico-Regular.ttf") format("truetype");
+}
+
+body {
+    color: #333;
+    font-size: 14px;
+    font-family: Cabin, sans-serif;
+    background: #fff9f3;
+}
+a {
+    text-decoration: none;
+}
+h2,
+h3,
+h4 {
+    padding: 0;
+    font-family: Quantico, sans-serif;
+    /* font-variant: small-caps; */
+}
+h2.underline {
+    color: #f18d3b;
+    background: #f4f0e4;
+    margin: 0;
+    border-radius: 2px;
+    padding: 8px 12px;
+    font-weight: 700;
+}
+.gene-list-item:hover {
+    color: #437356;
+    cursor: pointer;
+    font-weight: bold;
+}
+.btn:hover {
+    color: #437356;
+    cursor: pointer;
+    font-weight: bold;
+}
+.line {
+    clear: both;
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 12px 0 0 0;
+    border-bottom: 1px solid #aac789;
+    background: transparent;
+}
+
+.headingTxt {
+    font-weight: bold;
+    font-family: Quantico, sans-serif;
+    font-size: 16px;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
+#app-container {
+    height: 100%;
+}
+#sigma-container {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    /* position: absolute; */
+    width: 80%;
+    height: 100%;
+    stroke-opacity: 0.1;
+}
+#control-pane {
+    top: 10px;
+    /*bottom: 10px;*/
+    right: 10px;
+    position: absolute;
+    width: 275px;
+    height: 95%;
+    background-color: rgb(249, 247, 237);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+#control-pane > div {
+    height: 90%;
+    margin: 10px;
+    /* overflow-x: auto; */
+    overflow: auto;
+}
+#node_info {
+    /* height: 100%;
+    overflow: auto; */
+}
+
+#search_box {
+    font-family: Cabin, sans-serif;
+    color: #333;
+    font-style: italic;
+}
+
+.team_pics {
+    width: 50px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+    border-radius: 50%;
+    background-color: transparent;
+}
+
+.member_list {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}

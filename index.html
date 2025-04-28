@@ -1,0 +1,134 @@
+<!-- START SIGMA IMPORTS -->
+<head>
+    <meta charset="utf-8" />
+    <title>MsEE Lab Projects</title>
+    <link rel="shortcut icon" href="assets/favicons/favicon.ico" />
+    <link rel="stylesheet" href="src/style.css" />
+</head>
+
+<!-- Here are all the imports needed for Sigma.js -->
+<script src="./dependencies/sigma.3.0.1.min.js"></script>
+<script src="./dependencies/graphology.0.26.0.min.js"></script>
+<script src="./dependencies/graphology-library.0.26.0.min.js"></script>
+<!-- END SIGMA IMPORTS -->
+
+<!-- These imports are additional imports used to read the database -->
+<script src="./dependencies/papaparse.5.0.min.js"></script>
+<!-- [...] -->
+
+<div id="app-container">
+    <!-- Style the UI--this has been moved to a separate stylesheet -->
+
+    <!-- UI content -->
+    <div id="sigma-container-outer">
+        <!-- This container will house the network -->
+        <div id="sigma-container"></div>
+    </div>
+    <div id="control-pane">
+        <h2 class="underline">MsEE Lab Projects</h2>
+
+        <div>
+            <center>
+                A living project directory for<br />
+                <b
+                    ><a href="https://mseelab.org/" target="_blank"
+                        >the Multi-scale Evolutionary Engineering Lab</a
+                    ></b
+                >
+                <br />at Cornell University<br />
+                <!-- <a href="https://mseelab.org/" target="_blank">mseelab.org</a> -->
+                <br />
+                <!-- <a target="_blank" href="https://www.engineering.cornell.edu/"
+                    ><a target="_blank" href="https://www.cornell.edu/"
+                        ><img
+                            width="40px"
+                            style="position: relative; top: 6px"
+                            alt="Cornell logo"
+                            src="./assets/img/cornell_logo.png" /></a
+                    ><img
+                        width="120px"
+                        style="margin: 5px"
+                        alt="Cornell Engineering logo"
+                        src="./assets/img/cornellengineering_logo.png"
+                /></a>
+                <br /> -->
+                <a href="https://github.com/mseeLab/project-map" target="_blank"
+                    >GitHub src</a
+                >
+                using
+                <a href="http://sigmajs.org/" target="_blank">sigma.js</a>.
+            </center>
+            <!-- <p>
+                <center>
+                    <a
+                        title="Lab logo"
+                        target="_blank"
+                        href="https://mseelab.org"
+                        ><img
+                            width="50px"
+                            alt="Lab Logo"
+                            src="assets/img/msee_logo.png"
+                    /></a>
+                    <br /><br />
+                    <a href="https://mseelab.org/" target="_blank"
+                        >mseelab.org</a
+                    >
+                    <br />
+                    <a
+                        href="https://github.com/mseeLab/project-map"
+                        target="_blank"
+                        >GitHub src</a
+                    >
+                    using
+                    <a href="http://sigmajs.org/" target="_blank">sigma.js</a>.
+                </center>
+            </p> -->
+            <span class="line"></span><br />
+            <span class="headingTxt">
+                <font color="#2A9D8F"
+                    ><span id="questions_btn" class="btn"
+                        ><u>questions</u></span
+                    ></font
+                >
+                |
+                <font color="#F4A261"
+                    ><span id="tools_btn" class="btn"><u>tools</u></span></font
+                > </span
+            ><br />
+            <span class="headingTxt">
+                <span id="planned_btn" class="btn"><u>planned</u></span>
+                |
+                <span id="active_btn" class="btn"><u>active</u></span>
+                |
+                <span id="archived_btn" class="btn"
+                    ><u>archived</u></span
+                > </span
+            ><br />
+            <span class="headingTxt">
+                <span id="wet_btn" class="btn"><u>wet lab</u></span>
+                |
+                <span id="dry_btn" class="btn"><u>dry lab</u></span>
+                |
+                <span id="combined_btn" class="btn"
+                    ><u>combined</u></span
+                > </span
+            ><br />
+            <span class="headingTxt">
+                <span id="labels_btn" class="btn"
+                    ><font color="#AAA">labels</font></span
+                ></span
+            ><br /><br />
+            <input
+                type="text"
+                list="search_terms"
+                id="search_box"
+                name="search_box"
+                value="Search term..."
+            /><datalist id="search_terms"></datalist><br /><br />
+            <span class="line"></span>
+            <div class="node_info" id="node_info"></div>
+        </div>
+    </div>
+</div>
+<script src="./src/network.js"></script>
+<!-- [...] -->
