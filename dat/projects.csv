@@ -1,5 +1,5 @@
 ID,Name,Type,Methodology,Status,Years,Team,Collaborators,Funding,Products,Notebook,Connections,Content
-MsEE,Multi-scale evolutionary engineering,Lab,,,,,,,,,,"Bioengineering needs an evolutionary toolbox.
+MsEE,Multiscale evolutionary engineering,Lab,,,,,,,,,,"Bioengineering needs an evolutionary toolbox.
 We help build it.
 
 Forecasting evolution can allow us to design biotechnology, healthcare, and policy that is more effective and robust.
@@ -11,7 +11,7 @@ We foster open collaboration, effective communication, and dedicated mentorship.
 MsEE Lab is led by Pablo Cárdenas R. and will open in the summer of 2026 at the Smith School of Chemical and Biomolecular Engineering of Cornell University in Ithaca, NY, USA. "
 Applications,Applications,Branch,,,,,,,,,MsEE,"We collaborate with different area experts to apply the tools and design principles of evolutionarily-robust bioengineering on problems ranging across antimalarial discovery, influenza immunity, and therapeutic delivery for cancer and beyond. We look forward to seeing this list grow!"
 SynBio,Synthetic biology,Branch,,,,,,,,,MsEE,"In order to measure the impact of engineering interventions on evolution, we need tightly-controlled experimental systems with which to dissect these effects. Synthetic biology allows us to repurpose systems with different biological functions into tools for manipulating evolution in a controlled environment."
-CompMod,Computational models,Branch,,,,,,,,,MsEE,"To evaluate the evolutionary robustness of different strategies in a bottom-up, quantitative, and causal fashion, we develop multi-scale, mechanistic computational models. We inform these models with parameters derived from top-down machine learning and simulation-based inference."
+CompMod,Computational models,Branch,,,,,,,,,MsEE,"To evaluate the evolutionary robustness of different strategies in a bottom-up, quantitative, and causal fashion, we develop multiscale, mechanistic computational models. We inform these models with parameters derived from top-down machine learning and simulation-based inference."
 ExpEvo,Synthetic experimental models of evolution,Tool,Experimental,Planned,≥2027,None at the moment.,None at the moment.,None at the moment.,None at the moment.,,SynBio,
 FitToProb,How does fitness landscape shape evolutionary likelihood?,Question,Experimental & computational,Planned,≥2026,None at the moment.,None at the moment.,None at the moment.,None at the moment.,,"SynBio, CompMod",
 PredictLandscapes,Trajectory forecasting in viral evolution,Tool,Experimental & computational,Planned,≥2025,None at the moment.,"<a target=""_blank"" href=""https://sarahgurev.github.io/"">Sarah Gurev</a> (MIT 🇺🇸)",None at the moment.,None at the moment.,,"CompMod, Applications, glOpqua, FitToProb",
