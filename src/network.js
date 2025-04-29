@@ -222,11 +222,15 @@ var renderer = new Sigma(
       image: Sigma.rendering.createNodeImageProgram(),
     },
 
-    settings: {
-      edgeSize: 10,
-    },
+    // settings: {
+    //   edgeSize: 10,
+    //   hideEdgesOnMove: true, // for performance
+    //   hideLabelsOnMove: true,
+    // },
   },
 );
+renderer.setSetting("hideEdgesOnMove", true);
+renderer.setSetting("hideLabelsOnMove", true);
 
 Papa.parse("./dat/projects.csv", {
   download: true,
@@ -401,10 +405,14 @@ Papa.parse("./dat/projects.csv", {
         image: Sigma.rendering.createNodeImageProgram(),
       },
 
-      settings: {
-        edgeSize: 10,
-      },
+      // settings: {
+      //   edgeSize: 10,
+      //   hideEdgesOnMove: true, // for performance
+      //   hideLabelsOnMove: true,
+      // },
     });
+    renderer.setSetting("hideEdgesOnMove", true);
+    renderer.setSetting("hideLabelsOnMove", true);
 
     renderer.on("enterNode", (e) => {
       graph.setNodeAttribute(
