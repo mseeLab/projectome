@@ -229,8 +229,8 @@ var renderer = new Sigma(
     // },
   },
 );
-renderer.setSetting("hideEdgesOnMove", true);
-renderer.setSetting("hideLabelsOnMove", true);
+// renderer.setSetting("hideEdgesOnMove", true);
+// renderer.setSetting("hideLabelsOnMove", true);
 
 Papa.parse("./dat/projects.csv", {
   download: true,
@@ -376,6 +376,7 @@ Papa.parse("./dat/projects.csv", {
         content: row.data.Content,
         displayed: true,
       });
+      console.log(row.data.ID);
     }
   },
   // when done loading, continue
@@ -411,8 +412,8 @@ Papa.parse("./dat/projects.csv", {
       //   hideLabelsOnMove: true,
       // },
     });
-    renderer.setSetting("hideEdgesOnMove", true);
-    renderer.setSetting("hideLabelsOnMove", true);
+    // renderer.setSetting("hideEdgesOnMove", true);
+    // renderer.setSetting("hideLabelsOnMove", true);
 
     renderer.on("enterNode", (e) => {
       graph.setNodeAttribute(
@@ -687,7 +688,7 @@ Papa.parse("./dat/projects.csv", {
       // Since the data has been modified, we need to
       // call the refresh method to make the colors
       // update effective.
-      renderer.refresh();
+      // renderer.refresh();
     }
 
     renderer.on("clickNode", (e) => {
@@ -705,9 +706,9 @@ Papa.parse("./dat/projects.csv", {
     buildTermList();
 
     // don't know what this does but i'll leave it just in case :)
-    return () => {
-      renderer.kill();
-    };
+    // return () => {
+    //   renderer.kill();
+    // };
   },
 });
 
@@ -759,7 +760,7 @@ function colorUnselectedGraph() {
 
   colorEdges();
 
-  renderer.refresh();
+  // renderer.refresh();
   node_info_ui.innerHTML = DEFAULT_TXT; // reset display list
 }
 
@@ -850,7 +851,7 @@ function toggleLabels() {
     });
   }
 
-  renderer.refresh();
+  // renderer.refresh();
 }
 
 function buildTermList() {
