@@ -3,6 +3,8 @@
  * made by Pablo Cardenas based on sigma.js example code
  */
 
+console.log("Top of js");
+
 mobileCheck = function () {
   // from detectmobilebrowsers.com
   let check = false;
@@ -376,11 +378,11 @@ Papa.parse("./dat/projects.csv", {
         content: row.data.Content,
         displayed: true,
       });
-      console.log(row.data.ID);
     }
   },
   // when done loading, continue
   complete: function (data) {
+    console.log("Completed");
     // add edges
     graph.forEachNode((node) => {
       graph
@@ -704,6 +706,8 @@ Papa.parse("./dat/projects.csv", {
 
     colorUnselectedGraph();
     buildTermList();
+
+    console.log("Done setup");
 
     // don't know what this does but i'll leave it just in case :)
     // return () => {
