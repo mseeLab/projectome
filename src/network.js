@@ -2,9 +2,9 @@
  * Code for MsEE Project Map using sigma.js
  * made by Pablo Cardenas based on sigma.js example code
  */
-console.log("Start logging");
 
 mobileCheck = function () {
+  // from detectmobilebrowsers.com
   let check = false;
   (function (a) {
     if (
@@ -641,7 +641,6 @@ Papa.parse("./dat/projects.csv", {
           .getNodeAttribute(nodeId, "team")
           .split(",")
           .forEach(function (member) {
-            console.log(member);
             if (member in TEAM_DICT) {
               team = team + TEAM_DICT[member];
             } else {
