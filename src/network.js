@@ -642,8 +642,8 @@ Papa.parse("./dat/projects.csv", {
     const degrees = graph.nodes().map((node) => graph.degree(node));
     const minDegree = Math.min(...degrees);
     const maxDegree = Math.max(...degrees);
-    const minSize = 5,
-      maxSize = 20;
+    const minSize = 10,
+      maxSize = 30;
     graph.forEachNode((node) => {
       if (
         node != "MsEE" &&
