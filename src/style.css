@@ -120,8 +120,9 @@ h2.underline {
 
 #msee_logo {
     position: absolute;
-    top: 80px;
-    width: 70px;
+    top: 72px;
+    left: 12px;
+    width: 80px;
 }
 
 #nextLogo {
