@@ -23,6 +23,8 @@ mobileCheck = function () {
 const MOBILE = mobileCheck();
 
 const LAB_COLOR = "#E9C46A";
+var lab_color = LAB_COLOR;
+if (!MOBILE) lab_color = "rgba(0,0,0,0)";
 const BRANCH_COLOR = "rgba(0,0,0,0)";
 const TOPIC_COLOR = "#E76F51"; // unused
 var branch_color = BRANCH_COLOR;
@@ -228,6 +230,7 @@ var renderer = new Sigma(
 );
 renderer.setSetting("hideEdgesOnMove", MOBILE);
 renderer.setSetting("hideLabelsOnMove", MOBILE);
+renderer.setSetting("labelFont", "Cabin");
 
 Papa.parse("./dat/projects.csv", {
   download: true,
@@ -247,7 +250,7 @@ Papa.parse("./dat/projects.csv", {
           labelSize: 20,
           name: row.data.Name,
           id: row.data.ID,
-          label: "",
+          label: row.data.Name,
           nodeType: row.data.Type, // "type" conflicts with an existing node property
           methodology: row.data.Methodology,
           status: row.data.Status,
@@ -267,12 +270,12 @@ Papa.parse("./dat/projects.csv", {
           y: -100,
           color: "rgba(0,0,0,1)",
           originalColor: "rgba(0,0,0,1)",
-          size: 40,
+          size: 30,
           labelWeight: "bold",
           labelSize: 20,
           name: row.data.Name,
           id: row.data.ID,
-          label: "",
+          label: row.data.ID,
           nodeType: row.data.Type, // "type" conflicts with an existing node property
           methodology: row.data.Methodology,
           status: row.data.Status,
@@ -292,11 +295,11 @@ Papa.parse("./dat/projects.csv", {
           y: 0,
           color: "rgba(0,0,0,1)",
           originalColor: "rgba(0,0,0,1)",
-          size: 40,
+          size: 30,
           labelWeight: "bold",
           name: row.data.Name,
           id: row.data.ID,
-          label: "",
+          label: row.data.ID,
           nodeType: row.data.Type, // "type" conflicts with an existing node property
           methodology: row.data.Methodology,
           status: row.data.Status,
@@ -316,11 +319,11 @@ Papa.parse("./dat/projects.csv", {
           y: 0,
           color: "rgba(0,0,0,1)",
           originalColor: "rgba(0,0,0,1)",
-          size: 40,
+          size: 30,
           labelWeight: "bold",
           name: row.data.Name,
           id: row.data.ID,
-          label: "",
+          label: row.data.ID,
           nodeType: row.data.Type, // "type" conflicts with an existing node property
           methodology: row.data.Methodology,
           status: row.data.Status,
@@ -399,7 +402,7 @@ Papa.parse("./dat/projects.csv", {
           grayImage: "./assets/img/synbio-melanconnie-gray.png",
           color: "rgba(0,0,0,1)",
           originalColor: "rgba(0,0,0,1)",
-          size: 40,
+          size: 30,
           labelWeight: "bold",
           labelSize: 20,
           name: row.data.Name,
@@ -428,7 +431,7 @@ Papa.parse("./dat/projects.csv", {
           grayImage: "./assets/img/population-melanconnie-gray.png",
           color: "rgba(0,0,0,1)",
           originalColor: "rgba(0,0,0,1)",
-          size: 40,
+          size: 30,
           labelWeight: "bold",
           name: row.data.Name,
           id: row.data.ID,
@@ -456,7 +459,7 @@ Papa.parse("./dat/projects.csv", {
           grayImage: "./assets/img/earth-melanconnie-gray.png",
           color: "rgba(0,0,0,1)",
           originalColor: "rgba(0,0,0,1)",
-          size: 40,
+          size: 30,
           labelWeight: "bold",
           name: row.data.Name,
           id: row.data.ID,
@@ -509,7 +512,16 @@ Papa.parse("./dat/projects.csv", {
         .split(", ")
         .forEach((connection) => {
           if (connection != "") {
-            graph.addEdge(node, connection, { size: EDGE_SIZE });
+            if (connection == "MsEE" || node == "MsEE") {
+              graph.addEdge(node, connection, {
+                size: EDGE_SIZE * 2,
+                color: "#AAA",
+              });
+            } else {
+              graph.addEdge(node, connection, {
+                size: EDGE_SIZE,
+              });
+            }
           }
         });
     });
@@ -532,15 +544,15 @@ Papa.parse("./dat/projects.csv", {
 
     renderer.on("leaveNode", (e) => {
       if (
-        MOBILE &&
-        e.node != "MsEE" &&
-        e.node != "SynBio" &&
-        e.node != "CompMod" &&
-        e.node != "Applications"
+        !MOBILE ||
+        (MOBILE &&
+          (e.node != "MsEE" ||
+            e.node != "SynBio" ||
+            e.node != "CompMod" ||
+            e.node != "Applications"))
       ) {
         graph.setNodeAttribute(e.node, "label", "");
       }
-      graph.setNodeAttribute(e.node, "label", "");
     });
 
     // Drag'n'drop feature
@@ -548,14 +560,16 @@ Papa.parse("./dat/projects.csv", {
 
     // Create the spring layout and start it
     // this was changed from ForceSupervisor() to graphologyLibrary.ForceLayout()
-    const layout = new graphologyLibrary.ForceLayout(graph, {
-      isNodeFixed: function (node, attr) {
-        if (attr.highlighted || attr.nodeType == "Lab") {
-          return true;
-        } else return false;
-      },
-    });
-    layout.start();
+    if (!MOBILE) {
+      const layout = new graphologyLibrary.ForceLayout(graph, {
+        isNodeFixed: function (node, attr) {
+          if (attr.highlighted || attr.nodeType == "Lab") {
+            return true;
+          } else return false;
+        },
+      });
+      layout.start();
+    }
 
     // State for drag'n'drop
     let draggedNode = null;
@@ -603,8 +617,8 @@ Papa.parse("./dat/projects.csv", {
     // 4. Add colors to the nodes, based on node types:
     graph.forEachNode((node, attributes) => {
       if (attributes.nodeType == "Lab") {
-        graph.setNodeAttribute(node, "color", LAB_COLOR);
-        graph.setNodeAttribute(node, "originalColor", LAB_COLOR);
+        graph.setNodeAttribute(node, "color", lab_color);
+        graph.setNodeAttribute(node, "originalColor", lab_color);
       } else if (attributes.nodeType == "Branch") {
         graph.setNodeAttribute(node, "color", branch_color);
         graph.setNodeAttribute(node, "originalColor", branch_color);
@@ -957,7 +971,15 @@ function toggleLabels() {
   } else {
     labels_btn.innerHTML = "<font color='#AAA'>labels</font>";
     renderer.graph.nodes().forEach(function (n) {
-      graph.setNodeAttribute(n, "label", "");
+      if (
+        !MOBILE ||
+        (MOBILE &&
+          (n.node != "MsEE" ||
+            n.node != "SynBio" ||
+            n.node != "CompMod" ||
+            n.node != "Applications"))
+      )
+        graph.setNodeAttribute(n, "label", "");
     });
   }
 
