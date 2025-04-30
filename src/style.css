@@ -117,3 +117,13 @@ h2.underline {
     margin-right: auto;
     text-align: center;
 }
+
+#msee_logo {
+    position: absolute;
+    top: 80px;
+    width: 70px;
+}
+
+#nextLogo {
+    text-align: right;
+}

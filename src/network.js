@@ -735,6 +735,7 @@ Papa.parse("./dat/projects.csv", {
         if (toKeep.includes(n)) {
           // if this is the selected node or one of its neighbors,
           showNode(n);
+          graph.setNodeAttribute(n, "label", graph.getNodeAttribute(n, "name"));
         } // if not a neighbor or selected node,
         else {
           grayNode(n);
@@ -874,6 +875,7 @@ function colorUnselectedGraph() {
       graph.setNodeAttribute(n, "displayed", false);
       grayNode(n);
     }
+    if (!labels_show) graph.setNodeAttribute(n, "label", "");
   });
 
   colorEdges();
