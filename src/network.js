@@ -36,8 +36,8 @@ const OBJECTIVE_COLOR = "#264653"; // unused
 const EDGE_SIZE = 2;
 const INIT_SEARCH_TERM = "Search term...";
 const DEFAULT_TXT =
-  "<p>Illustrated nodes are <b>areas of research</b>.</p>" +
-  "<p>Colored nodes are <b>projects</b>, understood as drivers or motivators of research. " +
+  "<p>Large nodes are <b>areas of research</b>.</p>" +
+  "<p>Smaller, colored nodes are <b>projects</b>, understood as drivers or motivators of research. " +
   'These come in two types: those aimed at <b><font color="' +
   QUESTION_COLOR +
   '">answering questions</font></b> to understand phenomena ' +
