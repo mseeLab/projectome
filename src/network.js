@@ -231,6 +231,7 @@ var renderer = new Sigma(
 renderer.setSetting("hideEdgesOnMove", MOBILE);
 renderer.setSetting("hideLabelsOnMove", MOBILE);
 renderer.setSetting("labelFont", "Cabin");
+if (MOBILE) renderer.setSetting("labelSize", 28);
 
 Papa.parse("./dat/projects.csv", {
   download: true,
