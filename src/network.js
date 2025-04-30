@@ -3,8 +3,6 @@
  * made by Pablo Cardenas based on sigma.js example code
  */
 
-console.log("Top of js");
-
 mobileCheck = function () {
   // from detectmobilebrowsers.com
   let check = false;
@@ -22,9 +20,13 @@ mobileCheck = function () {
   return check;
 };
 
+const MOBILE = mobileCheck();
+
 const LAB_COLOR = "#E9C46A";
 const BRANCH_COLOR = "rgba(0,0,0,0)";
 const TOPIC_COLOR = "#E76F51"; // unused
+var branch_color = BRANCH_COLOR;
+if (MOBILE) branch_color = TOPIC_COLOR;
 const TOOL_COLOR = "#F4A261";
 const QUESTION_COLOR = "#2A9D8F";
 const OBJECTIVE_COLOR = "#264653"; // unused
@@ -212,27 +214,20 @@ const search_terms_ui = document.getElementById("search_terms");
 const node_info_ui = document.getElementById("node_info");
 
 const graph = new graphology.Graph();
-const empty_graph = new graphology.Graph();
 // used to temporarily fill the renderer
 var renderer = new Sigma(
   // declared here to make it accessible to other functions
-  empty_graph,
+  graph,
   document.getElementById("sigma-container"),
   {
     // defaultNodeType: "image",
     nodeProgramClasses: {
       image: Sigma.rendering.createNodeImageProgram(),
     },
-
-    // settings: {
-    //   edgeSize: 10,
-    //   hideEdgesOnMove: true, // for performance
-    //   hideLabelsOnMove: true,
-    // },
   },
 );
-// renderer.setSetting("hideEdgesOnMove", true);
-// renderer.setSetting("hideLabelsOnMove", true);
+renderer.setSetting("hideEdgesOnMove", MOBILE);
+renderer.setSetting("hideLabelsOnMove", MOBILE);
 
 Papa.parse("./dat/projects.csv", {
   download: true,
@@ -240,149 +235,273 @@ Papa.parse("./dat/projects.csv", {
   delimiter: ",",
   // on row load, make a new node
   step: function (row) {
-    if (row.data.ID == "MsEE") {
-      graph.addNode(row.data.ID, {
-        x: 0,
-        y: 0,
-        type: "image",
-        image: "./assets/img/msee_logo-gray.png",
-        // we start with gray images and then replace with colored so they're all loaded
-        originalImage: "./assets/img/msee_logo.png",
-        grayImage: "./assets/img/msee_logo-gray.png",
-        color: "rgba(0,0,0,1)",
-        originalColor: "rgba(0,0,0,1)",
-        size: 60,
-        labelWeight: "bold",
-        labelSize: 20,
-        name: row.data.Name,
-        id: row.data.ID,
-        label: "",
-        nodeType: row.data.Type, // "type" conflicts with an existing node property
-        methodology: row.data.Methodology,
-        status: row.data.Status,
-        years: row.data.Years,
-        team: row.data.Team,
-        collaborators: row.data.Collaborators,
-        funding: row.data.Funding,
-        products: row.data.Products,
-        notebook: row.data.Notebook,
-        connections: row.data.Connections,
-        content: row.data.Content,
-        displayed: true,
-      });
-    } else if (row.data.ID == "SynBio") {
-      graph.addNode(row.data.ID, {
-        x: 0,
-        y: -100,
-        type: "image",
-        image: "./assets/img/synbio-melanconnie-gray.png",
-        originalImage: "./assets/img/synbio-melanconnie.png",
-        grayImage: "./assets/img/synbio-melanconnie-gray.png",
-        color: "rgba(0,0,0,1)",
-        originalColor: "rgba(0,0,0,1)",
-        size: 40,
-        labelWeight: "bold",
-        labelSize: 20,
-        name: row.data.Name,
-        id: row.data.ID,
-        label: "",
-        nodeType: row.data.Type, // "type" conflicts with an existing node property
-        methodology: row.data.Methodology,
-        status: row.data.Status,
-        years: row.data.Years,
-        team: row.data.Team,
-        collaborators: row.data.Collaborators,
-        funding: row.data.Funding,
-        products: row.data.Products,
-        notebook: row.data.Notebook,
-        connections: row.data.Connections,
-        content: row.data.Content,
-        displayed: true,
-      });
-    } else if (row.data.ID == "CompMod") {
-      graph.addNode(row.data.ID, {
-        x: -1000,
-        y: 0,
-        type: "image",
-        image: "./assets/img/population-melanconnie-gray.png",
-        originalImage: "./assets/img/population-melanconnie.png",
-        grayImage: "./assets/img/population-melanconnie-gray.png",
-        color: "rgba(0,0,0,1)",
-        originalColor: "rgba(0,0,0,1)",
-        size: 40,
-        labelWeight: "bold",
-        name: row.data.Name,
-        id: row.data.ID,
-        label: "",
-        nodeType: row.data.Type, // "type" conflicts with an existing node property
-        methodology: row.data.Methodology,
-        status: row.data.Status,
-        years: row.data.Years,
-        team: row.data.Team,
-        collaborators: row.data.Collaborators,
-        funding: row.data.Funding,
-        products: row.data.Products,
-        notebook: row.data.Notebook,
-        connections: row.data.Connections,
-        content: row.data.Content,
-        displayed: true,
-      });
-    } else if (row.data.ID == "Applications") {
-      graph.addNode(row.data.ID, {
-        x: -100,
-        y: 0,
-        type: "image",
-        image: "./assets/img/earth-melanconnie-gray.png",
-        originalImage: "./assets/img/earth-melanconnie.png",
-        grayImage: "./assets/img/earth-melanconnie-gray.png",
-        color: "rgba(0,0,0,1)",
-        originalColor: "rgba(0,0,0,1)",
-        size: 40,
-        labelWeight: "bold",
-        name: row.data.Name,
-        id: row.data.ID,
-        label: "",
-        nodeType: row.data.Type, // "type" conflicts with an existing node property
-        methodology: row.data.Methodology,
-        status: row.data.Status,
-        years: row.data.Years,
-        team: row.data.Team,
-        collaborators: row.data.Collaborators,
-        funding: row.data.Funding,
-        products: row.data.Products,
-        notebook: row.data.Notebook,
-        connections: row.data.Connections,
-        content: row.data.Content,
-        displayed: true,
-      });
-    } else if (row.data.ID != null) {
-      graph.addNode(row.data.ID, {
-        x: 0,
-        y: 0,
-        color: "rgba(0,0,0,1)",
-        originalColor: "rgba(0,0,0,1)",
-        size: 10,
-        name: row.data.Name,
-        id: row.data.ID,
-        label: "",
-        nodeType: row.data.Type, // "type" conflicts with something internal?
-        methodology: row.data.Methodology,
-        status: row.data.Status,
-        years: row.data.Years,
-        team: row.data.Team,
-        collaborators: row.data.Collaborators,
-        funding: row.data.Funding,
-        products: row.data.Products,
-        notebook: row.data.Notebook,
-        connections: row.data.Connections,
-        content: row.data.Content,
-        displayed: true,
-      });
+    if (MOBILE) {
+      if (row.data.ID == "MsEE") {
+        graph.addNode(row.data.ID, {
+          x: 0,
+          y: 0,
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 60,
+          labelWeight: "bold",
+          labelSize: 20,
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with an existing node property
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      } else if (row.data.ID == "SynBio") {
+        graph.addNode(row.data.ID, {
+          x: 0,
+          y: -100,
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 40,
+          labelWeight: "bold",
+          labelSize: 20,
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with an existing node property
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      } else if (row.data.ID == "CompMod") {
+        graph.addNode(row.data.ID, {
+          x: -1000,
+          y: 0,
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 40,
+          labelWeight: "bold",
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with an existing node property
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      } else if (row.data.ID == "Applications") {
+        graph.addNode(row.data.ID, {
+          x: -100,
+          y: 0,
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 40,
+          labelWeight: "bold",
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with an existing node property
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      } else if (row.data.ID != null) {
+        graph.addNode(row.data.ID, {
+          x: 0,
+          y: 0,
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 10,
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with something internal?
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      }
+    } else {
+      if (row.data.ID == "MsEE") {
+        graph.addNode(row.data.ID, {
+          x: 0,
+          y: 0,
+          type: "image",
+          image: "./assets/img/msee_logo-gray.png",
+          // we start with gray images and then replace with colored so they're all loaded
+          originalImage: "./assets/img/msee_logo_border.png",
+          grayImage: "./assets/img/msee_logo-gray.png",
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 60,
+          labelWeight: "bold",
+          labelSize: 20,
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with an existing node property
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      } else if (row.data.ID == "SynBio") {
+        graph.addNode(row.data.ID, {
+          x: 0,
+          y: -100,
+          type: "image",
+          image: "./assets/img/synbio-melanconnie-gray.png",
+          originalImage: "./assets/img/synbio-melanconnie.png",
+          grayImage: "./assets/img/synbio-melanconnie-gray.png",
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 40,
+          labelWeight: "bold",
+          labelSize: 20,
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with an existing node property
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      } else if (row.data.ID == "CompMod") {
+        graph.addNode(row.data.ID, {
+          x: -1000,
+          y: 0,
+          type: "image",
+          image: "./assets/img/population-melanconnie-gray.png",
+          originalImage: "./assets/img/population-melanconnie.png",
+          grayImage: "./assets/img/population-melanconnie-gray.png",
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 40,
+          labelWeight: "bold",
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with an existing node property
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      } else if (row.data.ID == "Applications") {
+        graph.addNode(row.data.ID, {
+          x: -100,
+          y: 0,
+          type: "image",
+          image: "./assets/img/earth-melanconnie-gray.png",
+          originalImage: "./assets/img/earth-melanconnie.png",
+          grayImage: "./assets/img/earth-melanconnie-gray.png",
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 40,
+          labelWeight: "bold",
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with an existing node property
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      } else if (row.data.ID != null) {
+        graph.addNode(row.data.ID, {
+          x: 0,
+          y: 0,
+          color: "rgba(0,0,0,1)",
+          originalColor: "rgba(0,0,0,1)",
+          size: 10,
+          name: row.data.Name,
+          id: row.data.ID,
+          label: "",
+          nodeType: row.data.Type, // "type" conflicts with something internal?
+          methodology: row.data.Methodology,
+          status: row.data.Status,
+          years: row.data.Years,
+          team: row.data.Team,
+          collaborators: row.data.Collaborators,
+          funding: row.data.Funding,
+          products: row.data.Products,
+          notebook: row.data.Notebook,
+          connections: row.data.Connections,
+          content: row.data.Content,
+          displayed: true,
+        });
+      }
     }
   },
   // when done loading, continue
   complete: function (data) {
-    console.log("Completed");
     // add edges
     graph.forEachNode((node) => {
       graph
@@ -402,20 +521,6 @@ Papa.parse("./dat/projects.csv", {
       settings,
       iterations: 600,
     });
-    renderer = new Sigma(graph, document.getElementById("sigma-container"), {
-      // defaultNodeType: "image",
-      nodeProgramClasses: {
-        image: Sigma.rendering.createNodeImageProgram(),
-      },
-
-      // settings: {
-      //   edgeSize: 10,
-      //   hideEdgesOnMove: true, // for performance
-      //   hideLabelsOnMove: true,
-      // },
-    });
-    // renderer.setSetting("hideEdgesOnMove", true);
-    // renderer.setSetting("hideLabelsOnMove", true);
 
     renderer.on("enterNode", (e) => {
       graph.setNodeAttribute(
@@ -442,7 +547,7 @@ Papa.parse("./dat/projects.csv", {
 
     // Create the spring layout and start it
     // this was changed from ForceSupervisor() to graphologyLibrary.ForceLayout()
-    if (!mobileCheck()) {
+    if (!MOBILE) {
       const layout = new graphologyLibrary.ForceLayout(graph, {
         isNodeFixed: function (node, attr) {
           if (attr.highlighted || attr.nodeType == "Lab") {
@@ -502,8 +607,8 @@ Papa.parse("./dat/projects.csv", {
         graph.setNodeAttribute(node, "color", LAB_COLOR);
         graph.setNodeAttribute(node, "originalColor", LAB_COLOR);
       } else if (attributes.nodeType == "Branch") {
-        graph.setNodeAttribute(node, "color", BRANCH_COLOR);
-        graph.setNodeAttribute(node, "originalColor", BRANCH_COLOR);
+        graph.setNodeAttribute(node, "color", branch_color);
+        graph.setNodeAttribute(node, "originalColor", branch_color);
       } else if (attributes.nodeType == "Topic") {
         graph.setNodeAttribute(node, "color", TOPIC_COLOR);
         graph.setNodeAttribute(node, "originalColor", TOPIC_COLOR);
@@ -551,10 +656,8 @@ Papa.parse("./dat/projects.csv", {
         graph.getNodeAttribute(n, "color"),
       );
       if (
-        n == "MsEE" ||
-        n == "SynBio" ||
-        n == "CompMod" ||
-        n == "Applications"
+        !MOBILE &&
+        (n == "MsEE" || n == "SynBio" || n == "CompMod" || n == "Applications")
       ) {
         graph.setNodeAttribute(
           n,
@@ -707,12 +810,10 @@ Papa.parse("./dat/projects.csv", {
     colorUnselectedGraph();
     buildTermList();
 
-    console.log("Done setup");
-
     // don't know what this does but i'll leave it just in case :)
-    // return () => {
-    //   renderer.kill();
-    // };
+    return () => {
+      renderer.kill();
+    };
   },
 });
 
@@ -803,7 +904,10 @@ function showNode(n) {
     "color",
     graph.getNodeAttribute(n, "originalColor"),
   );
-  if (n == "MsEE" || n == "SynBio" || n == "CompMod" || n == "Applications") {
+  if (
+    !MOBILE &&
+    (n == "MsEE" || n == "SynBio" || n == "CompMod" || n == "Applications")
+  ) {
     graph.setNodeAttribute(
       n,
       "image",
@@ -816,7 +920,10 @@ function showNode(n) {
 
 function grayNode(n) {
   graph.setNodeAttribute(n, "color", "#eee"); // grey it out
-  if (n == "MsEE" || n == "SynBio" || n == "CompMod" || n == "Applications") {
+  if (
+    !MOBILE &&
+    (n == "MsEE" || n == "SynBio" || n == "CompMod" || n == "Applications")
+  ) {
     graph.setNodeAttribute(n, "image", graph.getNodeAttribute(n, "grayImage")); // set it to its original color
   }
   graph.setNodeAttribute(n, "label", "");
