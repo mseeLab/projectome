@@ -531,14 +531,15 @@ Papa.parse("./dat/projects.csv", {
     });
 
     renderer.on("leaveNode", (e) => {
-      // if (
-      //   e.node != "MsEE" &&
-      //   e.node != "SynBio" &&
-      //   e.node != "CompMod" &&
-      //   e.node != "Applications"
-      // ) {
-      //   graph.setNodeAttribute(e.node, "label", "");
-      // }
+      if (
+        MOBILE &&
+        e.node != "MsEE" &&
+        e.node != "SynBio" &&
+        e.node != "CompMod" &&
+        e.node != "Applications"
+      ) {
+        graph.setNodeAttribute(e.node, "label", "");
+      }
       graph.setNodeAttribute(e.node, "label", "");
     });
 
@@ -547,16 +548,14 @@ Papa.parse("./dat/projects.csv", {
 
     // Create the spring layout and start it
     // this was changed from ForceSupervisor() to graphologyLibrary.ForceLayout()
-    if (!MOBILE) {
-      const layout = new graphologyLibrary.ForceLayout(graph, {
-        isNodeFixed: function (node, attr) {
-          if (attr.highlighted || attr.nodeType == "Lab") {
-            return true;
-          } else return false;
-        },
-      });
-      layout.start();
-    }
+    const layout = new graphologyLibrary.ForceLayout(graph, {
+      isNodeFixed: function (node, attr) {
+        if (attr.highlighted || attr.nodeType == "Lab") {
+          return true;
+        } else return false;
+      },
+    });
+    layout.start();
 
     // State for drag'n'drop
     let draggedNode = null;
