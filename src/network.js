@@ -264,6 +264,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       } else if (row.data.ID == "SynBio") {
         graph.addNode(row.data.ID, {
@@ -289,6 +290,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       } else if (row.data.ID == "CompMod") {
         graph.addNode(row.data.ID, {
@@ -313,6 +315,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       } else if (row.data.ID == "Applications") {
         graph.addNode(row.data.ID, {
@@ -337,6 +340,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       } else if (row.data.ID != null) {
         graph.addNode(row.data.ID, {
@@ -360,6 +364,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       }
     } else {
@@ -392,6 +397,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       } else if (row.data.ID == "SynBio") {
         graph.addNode(row.data.ID, {
@@ -421,6 +427,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       } else if (row.data.ID == "CompMod") {
         graph.addNode(row.data.ID, {
@@ -449,6 +456,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       } else if (row.data.ID == "Applications") {
         graph.addNode(row.data.ID, {
@@ -477,6 +485,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       } else if (row.data.ID != null) {
         graph.addNode(row.data.ID, {
@@ -500,6 +509,7 @@ Papa.parse("./dat/projects.csv", {
           connections: row.data.Connections,
           content: row.data.Content,
           displayed: true,
+          show_label: true,
         });
       }
     }
@@ -545,12 +555,13 @@ Papa.parse("./dat/projects.csv", {
 
     renderer.on("leaveNode", (e) => {
       if (
-        !MOBILE ||
-        (MOBILE &&
-          (e.node != "MsEE" ||
-            e.node != "SynBio" ||
-            e.node != "CompMod" ||
-            e.node != "Applications"))
+        !graph.getNodeAttribute(e.node, "show_label") &&
+        (!MOBILE ||
+          (MOBILE &&
+            (e.node != "MsEE" ||
+              e.node != "SynBio" ||
+              e.node != "CompMod" ||
+              e.node != "Applications")))
       ) {
         graph.setNodeAttribute(e.node, "label", "");
       }
@@ -736,6 +747,7 @@ Papa.parse("./dat/projects.csv", {
         if (toKeep.includes(n)) {
           // if this is the selected node or one of its neighbors,
           showNode(n);
+          graph.setNodeAttribute(n, "show_label", true);
           graph.setNodeAttribute(n, "label", graph.getNodeAttribute(n, "name"));
         } // if not a neighbor or selected node,
         else {
@@ -877,6 +889,7 @@ function colorUnselectedGraph() {
       grayNode(n);
     }
     if (!labels_show) graph.setNodeAttribute(n, "label", "");
+    graph.setNodeAttribute(n, "show_label", false);
   });
 
   colorEdges();
@@ -943,6 +956,7 @@ function grayNode(n) {
     graph.setNodeAttribute(n, "image", graph.getNodeAttribute(n, "grayImage")); // set it to its original color
   }
   graph.setNodeAttribute(n, "label", "");
+  graph.setNodeAttribute(n, "show_label", false);
 }
 
 function colorEdges() {
