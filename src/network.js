@@ -45,7 +45,7 @@ const DEFAULT_TXT =
   TOOL_COLOR +
   '">building tools</font></b> capable of achieving objectives.</p>' +
   "<p>Connections between projects denote <b>direct synergies</b>. Connections to research areas denote <b>belonging</b>.</p>" +
-  '<p>Read more about us at <b><a href="https://mseelab.org/" target="_blank">mseelab.org</a></b>. Interested? <b><a href="./index.html#contact">Reach out!</a></b></p>' +
+  '<p>Read more about us at <b><a href="https://mseelab.org/" target="_blank">mseelab.org</a></b>. Interested? <b><a href="https://mseelab.org/index.html#contact">Reach out!</a></b></p>' +
   "Go on and explore. ";
 
 const TEAM_DICT = {
