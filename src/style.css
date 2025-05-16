@@ -91,6 +91,9 @@ h2.underline {
     /* overflow-x: auto; */
     overflow: auto;
 }
+#control-pane-info {
+    position: absolute;
+}
 #node_info {
     /* height: 100%;
     overflow: auto; */
@@ -120,8 +123,8 @@ h2.underline {
 
 #msee_logo {
     position: absolute;
-    top: 72px;
-    left: 12px;
+    top: 15px;
+    left: 0px;
     width: 80px;
 }
 
