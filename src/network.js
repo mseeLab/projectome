@@ -50,7 +50,7 @@ const DEFAULT_TXT =
 
 const TEAM_DICT = {
   "Pablo Cárdenas R.":
-    '<a href="https://mseelab.org/members.html#pablocr"><img alt="Pablo" title="Pablo" class="team_pics" src="./assets/img/members/pablo-biorxiv-face.jpg"/></a>',
+    '<a href="https://mseelab.org/members.html#pablocr"><img alt="Pablo" title="Pablo" class="team_pics" src="./assets/img/members/pcr.jpg"/></a>',
 };
 
 const OMITTED_WORDS = [
