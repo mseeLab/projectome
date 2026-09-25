@@ -50,15 +50,15 @@ const DEFAULT_TXT =
 
 const TEAM_DICT = {
   "Pablo Cárdenas R.":
-    '<a href="https://mseelab.org/members.html#pablocr"><img alt="Pablo" title="Pablo" class="team_pics" src="./assets/img/members/pcr.jpg"/></a>',
+    '<a href="https://mseelab.org/members.html#pablocr"><img alt="Pablo" title="Pablo" class="team_pics" src="./assets/img/members/pcr-face.jpg"/></a>',
   "Julia Vizza":
-    '<a href="https://mseelab.org/members.html#juliaev"><img alt="Julia" title="Julia" class="team_pics" src="./assets/img/members/jev.jpg"/></a>',
+    '<a href="https://mseelab.org/members.html#juliaev"><img alt="Julia" title="Julia" class="team_pics" src="./assets/img/members/jev-face.jpg"/></a>',
   "Sucheta Ghosh":
-    '<a href="https://mseelab.org/members.html#suchetag"><img alt="Sucheta" title="Sucheta" class="team_pics" src="./assets/img/members/sg.jpg"/></a>',
+    '<a href="https://mseelab.org/members.html#suchetag"><img alt="Sucheta" title="Sucheta" class="team_pics" src="./assets/img/members/sg-face.jpg"/></a>',
   "Zhu Zhu Wang":
-    '<a href="https://mseelab.org/members.html#zhuzhuw"><img alt="Zhu Zhu" title="Zhu Zhu" class="team_pics" src="./assets/img/members/zzw.jpg"/></a>',
+    '<a href="https://mseelab.org/members.html#zhuzhuw"><img alt="Zhu Zhu" title="Zhu Zhu" class="team_pics" src="./assets/img/members/zzw-face.jpg"/></a>',
   "Mingzhu Tao":
-    '<a href="https://mseelab.org/members.html#mingzhut"><img alt="Mingzhu" title="Mingzhu" class="team_pics" src="./assets/img/members/mt.jpg"/></a>',
+    '<a href="https://mseelab.org/members.html#mingzhut"><img alt="Mingzhu" title="Mingzhu" class="team_pics" src="./assets/img/members/mt-face.jpg"/></a>',
 };
 
 const OMITTED_WORDS = [
@@ -790,10 +790,10 @@ Papa.parse("./dat/projects.csv", {
           .getNodeAttribute(nodeId, "team")
           .split(",")
           .forEach(function (member) {
-            if (member in TEAM_DICT) {
-              team = team + TEAM_DICT[member];
+            if (member.trim() in TEAM_DICT) {
+              team = team + TEAM_DICT[member.trim()];
             } else {
-              team = team + member;
+              team = team + member.trim();
             }
           });
 
