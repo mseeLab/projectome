@@ -792,6 +792,8 @@ Papa.parse("./dat/projects.csv", {
           .forEach(function (member) {
             if (member.trim() in TEAM_DICT) {
               team = team + TEAM_DICT[member.trim()];
+            } else if (member.slice(-1) == ".") {
+              team = team + member.trim()+", ";
             } else {
               team = team + member.trim();
             }
