@@ -793,15 +793,32 @@ Papa.parse("./dat/projects.csv", {
             if (member.trim() in TEAM_DICT) {
               team = team + TEAM_DICT[member.trim()];
             } else if (member.slice(-1) == ".") {
-              team = team + member.trim()+", ";
-            } else {
               team = team + member.trim();
+            } else {
+              team = team + member.trim()+",<br>";
             }
           });
 
         if (team.search("<img") > -1) {
           team = '<div class="member_list">' + team + "</div>";
+        } else if (team.indexOf(".") == -1) {
+          team = "<br>" + team + "</br>";
         } else team = team + "</br>";
+
+        var collaborators = graph.getNodeAttribute(nodeId, "collaborators");
+        if (collaborators.slice(-1) != ".") {
+          collaborators = "<br>" + collaborators.split(",").join(",<br>");
+        }
+
+        var products = graph.getNodeAttribute(nodeId, "products");
+        if (products.slice(-1) != ".") {
+          products = "<br>" + products.split(",").join(",<br>");
+        }
+
+        var funding = graph.getNodeAttribute(nodeId, "funding");
+        if (funding.slice(-1) != ".") {
+          funding = "<br>" + funding.split(",").join(",<br>");
+        }
 
         node_info_ui.innerHTML =
           "<br><span class='headingTxt'>" +
@@ -815,11 +832,11 @@ Papa.parse("./dat/projects.csv", {
           "</i></br><b>MsEE Lab Team: </b>" +
           team +
           "<b>Collaborators: </b>" +
-          graph.getNodeAttribute(nodeId, "collaborators") +
+          collaborators +
           "</br><b>Products: </b>" +
-          graph.getNodeAttribute(nodeId, "products") +
+          products +
           "</br><b>Funding sources: </b>" +
-          graph.getNodeAttribute(nodeId, "funding") +
+          funding +
           "</b>" +
           notebook +
           "<p>" +
