@@ -29,7 +29,7 @@ const BRANCH_COLOR = "rgba(0,0,0,0)";
 const TOPIC_COLOR = "#E76F51"; // unused
 var branch_color = BRANCH_COLOR;
 if (MOBILE) branch_color = TOPIC_COLOR;
-const TOOL_COLOR = "#F4A261";
+const TECH_COLOR = "#F4A261";
 const QUESTION_COLOR = "#2A9D8F";
 const OBJECTIVE_COLOR = "#264653"; // unused
 
@@ -42,8 +42,8 @@ const DEFAULT_TXT =
   QUESTION_COLOR +
   '">answering questions</font></b> to understand phenomena ' +
   'and those aimed at <b><font color="' +
-  TOOL_COLOR +
-  '">building tools</font></b> capable of achieving objectives.</p>' +
+  TECH_COLOR +
+  '">building technology</font></b> capable of achieving objectives.</p>' +
   "<p>Connections between projects denote <b>direct synergies</b>. Connections to research areas denote <b>belonging</b>.</p>" +
   '<p>Read more about us at <b><a href="https://mseelab.org/" target="_blank">mseelab.org</a></b>. Interested? <b><a href="https://mseelab.org/index.html#contact">Reach out!</a></b></p>' +
   "Go on and explore. ";
@@ -198,7 +198,7 @@ const OMITTED_WORDS = [
   "al",
 ];
 
-const tools_btn = document.getElementById("tools_btn");
+const tech_btn = document.getElementById("tech_btn");
 const questions_btn = document.getElementById("questions_btn");
 const planned_btn = document.getElementById("planned_btn");
 const active_btn = document.getElementById("active_btn");
@@ -208,7 +208,7 @@ const dry_btn = document.getElementById("dry_btn");
 const combined_btn = document.getElementById("combined_btn");
 const labels_btn = document.getElementById("labels_btn");
 
-var tools_show = true;
+var tech_show = true;
 var questions_show = true;
 var planned_show = true;
 var active_show = true;
@@ -645,9 +645,9 @@ Papa.parse("./dat/projects.csv", {
       } else if (attributes.nodeType == "Topic") {
         graph.setNodeAttribute(node, "color", TOPIC_COLOR);
         graph.setNodeAttribute(node, "originalColor", TOPIC_COLOR);
-      } else if (attributes.nodeType == "Tool") {
-        graph.setNodeAttribute(node, "color", TOOL_COLOR);
-        graph.setNodeAttribute(node, "originalColor", TOOL_COLOR);
+      } else if (attributes.nodeType == "Tech") {
+        graph.setNodeAttribute(node, "color", TECH_COLOR);
+        graph.setNodeAttribute(node, "originalColor", TECH_COLOR);
       } else if (attributes.nodeType == "Question") {
         graph.setNodeAttribute(node, "color", QUESTION_COLOR);
         graph.setNodeAttribute(node, "originalColor", QUESTION_COLOR);
@@ -872,7 +872,7 @@ Papa.parse("./dat/projects.csv", {
 });
 
 function toggleShow(btn, txt) {
-  if (btn == tools_btn) tools_show = !tools_show;
+  if (btn == tech_btn) tech_show = !tech_show;
   else if (btn == questions_btn) questions_show = !questions_show;
   else if (btn == planned_btn) planned_show = !planned_show;
   else if (btn == active_btn) active_show = !active_show;
@@ -893,7 +893,7 @@ function colorUnselectedGraph() {
     if (
       (graph.getNodeAttribute(n, "nodeType") == "Lab" ||
         graph.getNodeAttribute(n, "nodeType") == "Branch" ||
-        (((graph.getNodeAttribute(n, "nodeType") == "Tool" && tools_show) ||
+        (((graph.getNodeAttribute(n, "nodeType") == "Tech" && tech_show) ||
           (graph.getNodeAttribute(n, "nodeType") == "Question" &&
             questions_show)) &&
           ((graph.getNodeAttribute(n, "status") == "Planned" && planned_show) ||
@@ -1069,7 +1069,7 @@ function buildTermList() {
 }
 
 // Next, add listeners for the buttons on the UI:
-tools_btn.addEventListener("click", () => toggleShow(tools_btn, "tools"));
+tech_btn.addEventListener("click", () => toggleShow(tech_btn, "tech"));
 questions_btn.addEventListener("click", () =>
   toggleShow(questions_btn, "questions"),
 );
