@@ -44,7 +44,7 @@ const DEFAULT_TXT =
   'and those aimed at <b><font color="' +
   TECH_COLOR +
   '">building technology</font></b> capable of achieving objectives.</p>' +
-  "<p>Connections between projects denote <b>direct synergies</b>. Connections to research areas denote <b>belonging</b>.</p>" +
+  "<p>Connections between projects denote <b>direct synergies</b>.</p>" +
   '<p>Read more about us at <b><a href="https://mseelab.org/" target="_blank">mseelab.org</a></b>. Interested? <b><a href="https://mseelab.org/index.html#contact">Reach out!</a></b></p>' +
   "Go on and explore. ";
 
@@ -57,8 +57,30 @@ const TEAM_DICT = {
     '<a href="https://mseelab.org/members.html#suchetag"><img alt="Sucheta" title="Sucheta" class="team_pics" src="./assets/img/members/sg-face.jpg"/></a>',
   "Zhu Zhu Wang":
     '<a href="https://mseelab.org/members.html#zhuzhuw"><img alt="Zhu Zhu" title="Zhu Zhu" class="team_pics" src="./assets/img/members/zzw-face.jpg"/></a>',
+  "Juheon Chu":
+    '<a href="https://mseelab.org/members.juheonc"><img alt="Juheon" title="Juheon" class="team_pics" src="./assets/img/members/jc-face.jpg"/></a>',
+  "Julia Vizza":
+    '<a href="https://mseelab.org/members.html#juliaev"><img alt="Julia" title="Julia" class="team_pics" src="./assets/img/members/jev-face.jpg"/></a>',
+  "Ally Aggarwal":
+    '<a href="https://mseelab.org/members.html#allya"><img alt="Ally" title="Ally" class="team_pics" src="./assets/img/members/aa-face.jpg"/></a>',
+  "Sofia Mykytenko":
+    '<a href="https://mseelab.org/members.html#sofiam"><img alt="Sofia" title="Sofia" class="team_pics" src="./assets/img/members/sm-face.jpg"/></a>',
+  "Zhu Zhu Wang":
+    '<a href="https://mseelab.org/members.html#zhuzhuw"><img alt="Zhu Zhu" title="Zhu Zhu" class="team_pics" src="./assets/img/members/zzw-face.jpg"/></a>',
+  "Nyima Chonden":
+    '<a href="https://mseelab.org/members.html#nyimatc"><img alt="Nyima" title="Nyima" class="team_pics" src="./assets/img/members/ntc-face.jpg"/></a>',
+  "Anika Mahadeshwar":
+    '<a href="https://mseelab.org/members.html#anikam"><img alt="Anika" title="Anika" class="team_pics" src="./assets/img/members/am-face.jpg"/></a>',
+  "Emma Dempsey":
+    '<a href="https://mseelab.org/members.html#emmad"><img alt="Emma" title="Emma" class="team_pics" src="./assets/img/members/ed-face.jpg"/></a>',
+  "Reva Gargi":
+    '<a href="https://mseelab.org/members.html#revag"><img alt="Reva" title="Reva" class="team_pics" src="./assets/img/members/rg-face.jpg"/></a>',
+  "Sucheta Ghosh":
+    '<a href="https://mseelab.org/members.html#suchetag"><img alt="Sucheta" title="Sucheta" class="team_pics" src="./assets/img/members/sg-face.jpg"/></a>',
   "Mingzhu Tao":
     '<a href="https://mseelab.org/members.html#mingzhut"><img alt="Mingzhu" title="Mingzhu" class="team_pics" src="./assets/img/members/mt-face.jpg"/></a>',
+  "Vinay Bhardwaj":
+    '<a href="https://mseelab.org/members.html#vinayb"><img alt="Vinay" title="Vinay" class="team_pics" src="./assets/img/members/vb-face.jpg"/></a>',
 };
 
 const OMITTED_WORDS = [
